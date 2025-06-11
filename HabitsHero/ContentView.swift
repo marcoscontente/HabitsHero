@@ -32,7 +32,7 @@ struct ContentView: View {
 
                 Group {
                     if selectedView == .list {
-                        listView
+                        DiffableTableView(viewModel: viewModel)
                     } else {
                         gridView
                     }
@@ -50,24 +50,9 @@ struct ContentView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingAdd) { }
-        }
-    }
-
-    // MARK: – List
-    private var listView: some View {
-        List {
-            ForEach(viewModel.habits) { habit in
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(habit.title).font(.headline)
-                        Text(habit.category).font(.subheadline).foregroundColor(.secondary)
-                    }
-                    Spacer()
-                    Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .onTapGesture {
-                            viewModel.toggleCompletion(of: habit)
-                        }
+            .sheet(isPresented: $showingAdd) {
+                AddHabitView { title, category in
+                    viewModel.habits.append(Habit(title: title, category: category))
                 }
             }
         }
